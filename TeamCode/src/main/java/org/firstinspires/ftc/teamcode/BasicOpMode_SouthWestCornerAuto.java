@@ -48,9 +48,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoMotorTest")
+@Autonomous(name="SouthwestCornerAuto")
 // @Disabled
-public class BasicOpMode_MotorTest extends LinearOpMode {
+public class BasicOpMode_SouthWestCornerAuto extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -83,8 +83,10 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        boolean stop = false;
+
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        while ((opModeIsActive() & stop) == false) {
 
 
 
@@ -93,29 +95,35 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
 
 
             // Send calculated power to wheels
-            leftFrontDrive.setPower(1);
-            sleep(2000);
+            rightFrontDrive.setPower(0.5);
+            leftFrontDrive.setPower(0.5);
+            leftBackDrive.setPower(0.5);
+            rightBackDrive.setPower(0.5);
+            sleep(4000);
+            leftFrontDrive.setPower(0.5);
+            leftBackDrive.setPower(-0.5);
+            rightBackDrive.setPower(0.5);
+            rightFrontDrive.setPower(-0.5);
+            sleep(5500);
+            rightBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(-0.5);
+            leftFrontDrive.setPower(-0.5);
+            sleep(500);
+            rightBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
             leftFrontDrive.setPower(0);
 
-            leftBackDrive.setPower(1);
-            sleep(2000);
-            leftBackDrive.setPower(0);
-
-            rightBackDrive.setPower(1);
-            sleep(2000);
-            rightBackDrive.setPower(0);
-
-            rightFrontDrive.setPower(1);
-            sleep(2000);
-            rightFrontDrive.setPower(0);
-
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "Run Time: " + runtime.toString()); //s
             telemetry.update();
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
+
+            stop = true;
         }
     }
 }

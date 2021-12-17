@@ -48,16 +48,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoMotorTest")
+@Autonomous(name="SingleMotorTest")
 // @Disabled
-public class BasicOpMode_MotorTest extends LinearOpMode {
+public class BasicOpMode_SingleMotorTest extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightBackDrive = null;
+    private DcMotor motor = null;
 
     @Override
     public void runOpMode() {
@@ -67,17 +64,12 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        motor  = hardwareMap.get(DcMotor.class, "Motor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        motor.setDirection(DcMotor.Direction.REVERSE);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -93,21 +85,14 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
 
 
             // Send calculated power to wheels
-            leftFrontDrive.setPower(1);
-            sleep(2000);
-            leftFrontDrive.setPower(0);
+            motor.setPower(1);
+            sleep(5000);
+            motor.setPower(0);
 
-            leftBackDrive.setPower(1);
+            motor.setPower(-1);
+            sleep(5000);
+            motor.setPower(0);
             sleep(2000);
-            leftBackDrive.setPower(0);
-
-            rightBackDrive.setPower(1);
-            sleep(2000);
-            rightBackDrive.setPower(0);
-
-            rightFrontDrive.setPower(1);
-            sleep(2000);
-            rightFrontDrive.setPower(0);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -48,9 +49,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoMotorTest")
+@Autonomous(name="AutoEncoderTest")
 // @Disabled
-public class BasicOpMode_MotorTest extends LinearOpMode {
+public class BasicOpMode_EncoderTest extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -79,6 +80,28 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFrontDrive.setTargetPosition(10000);
+        leftBackDrive.setTargetPosition(10000);
+        rightFrontDrive.setTargetPosition(10000);
+        rightBackDrive.setTargetPosition(10000);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+*/
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -91,30 +114,57 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "Right Front Encoder: " + rightFrontDrive.getCurrentPosition());
+            telemetry.update();
 
-            // Send calculated power to wheels
-            leftFrontDrive.setPower(1);
             sleep(2000);
+/*
+            double enc = rightFrontDrive.getCurrentPosition();
+
+                while(rightFrontDrive.getCurrentPosition() < enc + 100000); {
+                    leftFrontDrive.setPower(0.5);
+                    leftBackDrive.setPower(0.5);
+                    rightBackDrive.setPower(0.5);
+                    rightFrontDrive.setPower(0.5);
+                    telemetry.addData("Status", "Running Loop" );
+                    telemetry.addData("Status", "Run Time: " + runtime.toString());
+                    telemetry.addData("Status", "Right Front Encoder: " + rightFrontDrive.getCurrentPosition());
+                    telemetry.update(); }
+
             leftFrontDrive.setPower(0);
-
-            leftBackDrive.setPower(1);
-            sleep(2000);
             leftBackDrive.setPower(0);
-
-            rightBackDrive.setPower(1);
-            sleep(2000);
             rightBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+*/
 
-            rightFrontDrive.setPower(1);
-            sleep(2000);
+            leftFrontDrive.setPower(0.5);
+            leftBackDrive.setPower(0.5);
+            rightBackDrive.setPower(0.5);
+            rightFrontDrive.setPower(0.5);
+
+            while (opModeIsActive() && leftFrontDrive.getCurrentPosition() < leftFrontDrive.getTargetPosition())
+            {
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Encoder", "Front Left: " + leftFrontDrive.getCurrentPosition());
+                telemetry.update();
+                idle();
+            }
+
+            leftFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
             rightFrontDrive.setPower(0);
 
+            // Show encoder value
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Encoder", "Front Left: " + leftFrontDrive.getCurrentPosition());
             telemetry.update();
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Encoder", "Front Left: " + leftFrontDrive.getCurrentPosition());
             telemetry.update();
         }
     }

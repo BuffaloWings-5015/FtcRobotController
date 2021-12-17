@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -48,9 +49,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoMotorTest")
+@Autonomous(name="AutoEncoderTest2")
 // @Disabled
-public class BasicOpMode_MotorTest extends LinearOpMode {
+public class BasicOpMode_EncoderTest2 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -58,6 +59,8 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+
+    //@Disabled
 
     @Override
     public void runOpMode() {
@@ -79,6 +82,29 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: NeveRest40 Motor Encoder
+        final double     DRIVE_GEAR_REDUCTION    = 1 ;     // This is < 1.0 if geared UP
+        final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+        final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                (WHEEL_DIAMETER_INCHES * 3.1415);
+        final double     DRIVE_SPEED             = 0.5;
+        final double     TURN_SPEED              = 1;
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftBackTarget;
+        int newRightBackTarget;
+
+        double leftFrontInches = -10.6;
+        double leftBackInches = 10.6;
+        double rightFrontInches = -10.6;
+        double rightBackInches = 10.6;
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -91,30 +117,45 @@ public class BasicOpMode_MotorTest extends LinearOpMode {
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
-
-            // Send calculated power to wheels
-            leftFrontDrive.setPower(1);
-            sleep(2000);
-            leftFrontDrive.setPower(0);
-
-            leftBackDrive.setPower(1);
-            sleep(2000);
-            leftBackDrive.setPower(0);
-
-            rightBackDrive.setPower(1);
-            sleep(2000);
-            rightBackDrive.setPower(0);
-
-            rightFrontDrive.setPower(1);
-            sleep(2000);
-            rightFrontDrive.setPower(0);
-
-            // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "Right Front Encoder: " + rightFrontDrive.getCurrentPosition());
             telemetry.update();
 
+            sleep(5000);
+
+            //newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int)(leftFrontInches * COUNTS_PER_INCH);
+            newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int)(rightFrontInches * COUNTS_PER_INCH);
+            //newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int)(leftBackInches * COUNTS_PER_INCH);
+            newRightBackTarget = rightBackDrive.getCurrentPosition() + (int)(rightBackInches * COUNTS_PER_INCH);
+            //leftFrontDrive.setTargetPosition(newLeftFrontTarget);
+            rightFrontDrive.setTargetPosition(newRightFrontTarget);
+            //leftBackDrive.setTargetPosition(newLeftBackTarget);
+            rightBackDrive.setTargetPosition(newRightBackTarget);
+
+            // Turn On RUN_TO_POSITION
+            //leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            //leftFrontDrive.setPower(Math.abs(DRIVE_SPEED));
+            rightFrontDrive.setPower(Math.abs(DRIVE_SPEED));
+            //leftBackDrive.setPower(Math.abs(DRIVE_SPEED));
+            rightBackDrive.setPower(Math.abs(DRIVE_SPEED));
+
+            // Show encoder value
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Encoder", "Front Left: " + leftFrontDrive.getCurrentPosition());
+            telemetry.update();
+
+            sleep(10000);
+
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Encoder", "Front Left: " + leftFrontDrive.getCurrentPosition());
             telemetry.update();
         }
     }

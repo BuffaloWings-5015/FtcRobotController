@@ -62,6 +62,8 @@ public class BasicOpMode_Iterative extends OpMode
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
 
+    double speedMultiplier = 1;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -79,9 +81,9 @@ public class BasicOpMode_Iterative extends OpMode
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
@@ -106,6 +108,7 @@ public class BasicOpMode_Iterative extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+
     @Override
     public void loop() {
         // Setup a variable for each drive wh
@@ -115,20 +118,36 @@ public class BasicOpMode_Iterative extends OpMode
         // leftPower  = -gamepad1.left_stick_y ;
         // rightPower = -gamepad1.right_stick_y ;
 
-        // Send calculated power to wheels
-        if(!gamepad2.b)
+        speedMultiplier = Range.clip((1.25 - gamepad1.left_trigger),0 , 1);
+
+        if(gamepad1.left_bumper)
         {
-            leftBackDrive.setPower(Range.clip((gamepad1.left_stick_y + (gamepad1.left_stick_x) - gamepad1.right_stick_x), -1, 1));
-            leftFrontDrive.setPower(Range.clip((gamepad1.left_stick_y - (gamepad1.left_stick_x) - gamepad1.right_stick_x), -1, 1));
-            rightBackDrive.setPower(Range.clip((-gamepad1.left_stick_y + (gamepad1.left_stick_x) - gamepad1.right_stick_x), -1, 1));
-            rightFrontDrive.setPower(Range.clip((-gamepad1.left_stick_y - (gamepad1.left_stick_x) - gamepad1.right_stick_x), -1, 1));
+            leftBackDrive.setPower(1 * speedMultiplier);
+            leftFrontDrive.setPower(-1 * speedMultiplier);
+            rightFrontDrive.setPower(1 * speedMultiplier);
+            rightBackDrive.setPower(-1 * speedMultiplier);
+        }
+        if(gamepad1.right_bumper)
+        {
+            leftBackDrive.setPower(-1 * speedMultiplier);
+            leftFrontDrive.setPower(1 * speedMultiplier);
+            rightFrontDrive.setPower(-1 * speedMultiplier);
+            rightBackDrive.setPower(1 * speedMultiplier);
+        } // Send calculated power to wheels
+        if(true)
+        {
+            leftBackDrive.setPower(Range.clip((gamepad1.left_stick_x + (gamepad1.left_stick_y) - gamepad1.right_stick_y), -1, 1) * speedMultiplier);
+            leftFrontDrive.setPower(Range.clip((gamepad1.left_stick_x - (gamepad1.left_stick_y) - gamepad1.right_stick_y), -1, 1) * speedMultiplier);
+            rightBackDrive.setPower(Range.clip((-gamepad1.left_stick_x + (gamepad1.left_stick_y) - gamepad1.right_stick_y), -1, 1) * speedMultiplier);
+            rightFrontDrive.setPower(Range.clip((-gamepad1.left_stick_x - (gamepad1.left_stick_y) - gamepad1.right_stick_y), -1, 1) * speedMultiplier);
         }
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
 
-    }
 
+
+}
     /*
      * Code to run ONCE after the driver hits STOP
      */

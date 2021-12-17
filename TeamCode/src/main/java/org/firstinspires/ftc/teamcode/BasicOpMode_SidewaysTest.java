@@ -74,10 +74,10 @@ public class BasicOpMode_SidewaysTest extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -93,23 +93,25 @@ public class BasicOpMode_SidewaysTest extends LinearOpMode {
 
 
             // Send calculated power to wheels
-            leftFrontDrive.setPower(1);
-            leftBackDrive.setPower(-1);
-            rightBackDrive.setPower(1);
-            rightFrontDrive.setPower(-1);
-            sleep(10000);
+            leftFrontDrive.setPower(-0.5);
+            leftBackDrive.setPower(0.5);
+            rightBackDrive.setPower(-0.5);
+            rightFrontDrive.setPower(0.5);
+            sleep(5000);
             rightFrontDrive.setPower(0);
             leftFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
             rightBackDrive.setPower(0);
             sleep(5000);
+/*
+
 
             //start diagonal front right test
-            /*leftFrontDrive.setPower(1);
-            rightBackDrive.setPower(1);
+            leftFrontDrive.setPower(-1);
+            rightBackDrive.setPower(-1);
             sleep(5000);
-            leftFrontDrive.setPower(0);
-            rightBackDrive.setPower(0);
+            leftFrontDrive.setPower(0.0);
+            rightBackDrive.setPower(0.0);
             sleep(5000);
 
             //diagonal back left
@@ -149,7 +151,7 @@ public class BasicOpMode_SidewaysTest extends LinearOpMode {
             rightBackDrive.setPower(0);
 */
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "Run Time: " + runtime.toString()); //s
             telemetry.update();
 
             // Show the elapsed game time and wheel power.
